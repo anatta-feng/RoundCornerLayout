@@ -104,7 +104,7 @@ class RoundCornerLinearLayout : LinearLayout, IRoundCornerLayout {
 			}
 
 			if (roundParams.isRoundBottomLeft) {
-				path.lineTo(viewBound.left - radius, viewBound.bottom)
+				path.lineTo(viewBound.left + radius, viewBound.bottom)
 				pathArc.set(viewBound.left, viewBound.bottom - 2 * radius, viewBound.left + 2 * radius, viewBound.bottom)
 				path.addArc(pathArc, 90f, 90f)
 				path.moveTo(viewBound.left, viewBound.bottom - radius)
