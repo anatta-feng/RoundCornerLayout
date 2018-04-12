@@ -77,40 +77,32 @@ class RoundCornerLinearLayout : LinearLayout, IRoundCornerLayout {
 		if (roundParams.isRoundTopLeft || roundParams.isRoundTopRight || roundParams.isRoundBottomLeft || roundParams.isRoundBottomRight) {
 			if (roundParams.isRoundTopLeft) {
 				pathArc.set(viewBound.left, viewBound.top, viewBound.left + 2 * radius, viewBound.top + 2 * radius)
-				path.addArc(pathArc, 180f, 90f)
-				path.moveTo(viewBound.left + radius, viewBound.top)
+				path.arcTo(pathArc, 180f, 90f)
 			} else {
-				path.moveTo(viewBound.left, viewBound.top)
 			}
 
 			if (roundParams.isRoundTopRight) {
 				path.lineTo(viewBound.right - radius, viewBound.top)
 				pathArc.set(viewBound.right - 2 * radius, viewBound.top, viewBound.right, viewBound.top + 2 * radius)
-				path.addArc(pathArc, 270f, 90f)
-				path.moveTo(viewBound.right, viewBound.top + radius)
+				path.arcTo(pathArc, 270f, 90f)
 			} else {
 				path.lineTo(viewBound.right, viewBound.top)
-				path.moveTo(viewBound.right, viewBound.top)
 			}
 
 			if (roundParams.isRoundBottomRight) {
 				path.lineTo(viewBound.right, viewBound.bottom - radius)
 				pathArc.set(viewBound.right - 2 * radius, viewBound.bottom - 2 * radius, viewBound.right, viewBound.bottom)
-				path.addArc(pathArc, 0f, 90f)
-				path.moveTo(viewBound.right - radius, viewBound.bottom)
+				path.arcTo(pathArc, 0f, 90f)
 			} else {
 				path.lineTo(viewBound.right, viewBound.bottom)
-				path.moveTo(viewBound.right, viewBound.bottom)
 			}
 
 			if (roundParams.isRoundBottomLeft) {
 				path.lineTo(viewBound.left + radius, viewBound.bottom)
 				pathArc.set(viewBound.left, viewBound.bottom - 2 * radius, viewBound.left + 2 * radius, viewBound.bottom)
-				path.addArc(pathArc, 90f, 90f)
-				path.moveTo(viewBound.left, viewBound.bottom - radius)
+				path.arcTo(pathArc, 90f, 90f)
 			} else {
 				path.lineTo(viewBound.left, viewBound.bottom)
-				path.moveTo(viewBound.left, viewBound.bottom)
 			}
 
 			if (roundParams.isRoundTopLeft) {
