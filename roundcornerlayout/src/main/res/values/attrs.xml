@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundCornerLayout">
+        <attr name="roundAsCircle" format="boolean"/>
+        <attr name="roundedCornerRadius" format="dimension" />
+        <attr name="roundTopLeft" format="boolean" />
+        <attr name="roundTopRight" format="boolean" />
+        <attr name="roundBottomLeft" format="boolean" />
+        <attr name="roundBottomRight" format="boolean" />
+        <attr name="roundingBorderWidth" format="dimension" />
+        <attr name="roundingBorderColor" format="color" />
+    </declare-styleable>
+</resources>
