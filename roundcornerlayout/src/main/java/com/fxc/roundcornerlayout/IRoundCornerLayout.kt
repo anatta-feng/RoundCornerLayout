@@ -2,6 +2,8 @@ package com.fxc.roundcornerlayout
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Path
+import android.graphics.RectF
 import android.util.AttributeSet
 
 /**
@@ -11,9 +13,13 @@ import android.util.AttributeSet
 interface IRoundCornerLayout {
 
 	var isAttached: Boolean
+	val pathArc: RectF
+	val viewBound: RectF
+	val boundPath: Path
 
 	var roundParams: RoundParams
 	fun initRoundCornerAttrs(ctx: Context, attr: AttributeSet) {
+		makeVpCanDraw()
 		val array = ctx.obtainStyledAttributes(attr, R.styleable.RoundCornerLayout)
 		val count = array.indexCount
 		(0 until count)
@@ -34,12 +40,121 @@ interface IRoundCornerLayout {
 		array.recycle()
 	}
 
+	fun makeVpCanDraw()
+
 	fun setRoundBounds(canvas: Canvas) {
 		canvas.save()
 		canvas.restore()
 	}
 
 	fun updateView()
+
+	fun getMinSize(): Float
+
+	private fun ifRoundAsCircle(path: Path): Boolean {
+		if (roundParams.roundAsCircle) {
+			val center = getMinSize() / 2
+			var radius = center
+			if (roundParams.roundingBorderWidth != 0f) {
+				radius -= roundParams.roundingBorderWidth
+			}
+			path.addCircle(center, center, radius, Path.Direction.CW)
+			return true
+		}
+		return false
+	}
+
+	private fun isAnyCornerHasRound(): Boolean {
+		return roundParams.isRoundTopLeft || roundParams.isRoundTopRight || roundParams.isRoundBottomLeft || roundParams.isRoundBottomRight
+	}
+
+	private fun whenTopLeftRound(path: Path, radius: Float) {
+		if (roundParams.isRoundTopLeft) {
+			pathArc.set(viewBound.left, viewBound.top, viewBound.left + 2 * radius, viewBound.top + 2 * radius)
+			path.arcTo(pathArc, 180f, 90f)
+		}
+	}
+
+	private fun whenTopRightRound(path: Path, radius: Float) {
+		if (roundParams.isRoundTopRight) {
+			path.lineTo(viewBound.right - radius, viewBound.top)
+			pathArc.set(viewBound.right - 2 * radius, viewBound.top, viewBound.right, viewBound.top + 2 * radius)
+			path.arcTo(pathArc, 270f, 90f)
+		} else {
+			path.lineTo(viewBound.right, viewBound.top)
+		}
+	}
+
+	private fun whenBottomRightRound(path: Path, radius: Float) {
+		if (roundParams.isRoundBottomRight) {
+			path.lineTo(viewBound.right, viewBound.bottom - radius)
+			pathArc.set(viewBound.right - 2 * radius, viewBound.bottom - 2 * radius, viewBound.right, viewBound.bottom)
+			path.arcTo(pathArc, 0f, 90f)
+		} else {
+			path.lineTo(viewBound.right, viewBound.bottom)
+		}
+
+	}
+
+	private fun whenBottomLeftRound(path: Path, radius: Float) {
+		if (roundParams.isRoundBottomLeft) {
+			path.lineTo(viewBound.left + radius, viewBound.bottom)
+			pathArc.set(viewBound.left, viewBound.bottom - 2 * radius, viewBound.left + 2 * radius, viewBound.bottom)
+			path.arcTo(pathArc, 90f, 90f)
+		} else {
+			path.lineTo(viewBound.left, viewBound.bottom)
+		}
+	}
+
+	private fun closePath(path: Path, radius: Float) {
+		if (roundParams.isRoundTopLeft) {
+			path.lineTo(viewBound.left, viewBound.top + radius)
+		} else {
+			path.lineTo(viewBound.left, viewBound.top)
+		}
+	}
+
+	fun obtainBounds(): Path {
+		if (ifRoundAsCircle(boundPath)) {
+			return boundPath
+		}
+		val radius = roundParams.roundCornerRadius
+		if (isAnyCornerHasRound()) {
+			whenTopLeftRound(boundPath, radius)
+			whenTopRightRound(boundPath, radius)
+			whenBottomRightRound(boundPath, radius)
+			whenBottomLeftRound(boundPath, radius)
+			closePath(boundPath, radius)
+		}
+		return boundPath
+	}
+
+
+	fun beforeDraw(canvas: Canvas) {
+		start(canvas)
+		obtainBounds()
+		applyBound(canvas)
+	}
+
+	fun afterDraw(canvas: Canvas) {
+		completed(canvas)
+
+	}
+
+	fun start(canvas: Canvas) {
+		canvas.save()
+	}
+
+	fun completed(canvas: Canvas) {
+		canvas.restore()
+		boundPath.reset()
+	}
+
+	fun applyBound(canvas: Canvas) {
+		if (!boundPath.isEmpty) {
+			canvas.clipPath(boundPath)
+		}
+	}
 
 
 	class RoundParams(val view: IRoundCornerLayout) {
