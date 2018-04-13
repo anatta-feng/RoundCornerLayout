@@ -9,6 +9,7 @@
     app:roundBottomRight="true"
     app:roundBottomLeft="true"
     app:roundTopLeft="true"
+    app:roundTopRight="true"
     android:padding="20dp"
     android:background="@color/colorAccent"
     tools:context=".MainActivity">
