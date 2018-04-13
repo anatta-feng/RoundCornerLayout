@@ -12,6 +12,29 @@
 
 ![](https://ws4.sinaimg.cn/large/006tKfTcly1fqava7owkbj30vi0k0q5r.jpg)
 
+# 集成
+
+**Step 1.** Add the JitPack repository to your build file
+
+Add it in your root build.gradle at the end of repositories:
+
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
+**Step 2.** Add the dependency
+
+```
+	dependencies {
+		compile 'com.github.fxc0719:RoundCornerLayout:1.0.2'
+	}
+```
+
 # 自定义属性
 
 | 属性名              | 效果                 |
